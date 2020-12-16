@@ -10,7 +10,7 @@ import core.Settings;
  * Epidemic message router with drop-oldest buffer and only single transferring
  * connections at a time.
  */
-public class EpidemicRouter extends ActiveRouter {
+public class EpidemicRouter extends LimitedHopsRouter {
 	
 	/**
 	 * Constructor. Creates a new message router based on the settings in

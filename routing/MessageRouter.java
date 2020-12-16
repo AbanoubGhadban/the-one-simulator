@@ -62,6 +62,8 @@ public abstract class MessageRouter {
 	public static final int DENIED_NO_SPACE = -2;
 	/** Receive return value for messages whose TTL has expired */
 	public static final int DENIED_TTL = -3;
+	/** Receive return value for messages that exceeded max hops limit */
+	public static final int DENIED_EXCEEDED_MAX_HOPS = -4;
 	/** Receive return value for unspecified reason */
 	public static final int DENIED_UNSPECIFIED = -999;
 	
