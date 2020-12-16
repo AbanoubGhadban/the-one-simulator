@@ -18,7 +18,7 @@ import core.Settings;
  * Connected Mobile Networks</I> by Thrasyvoulos Spyropoulus et al.
  *
  */
-public class SprayAndWaitRouter extends ActiveRouter {
+public class SprayAndWaitRouter extends LimitedHopsRouter {
 	/** identifier for the initial number of copies setting ({@value})*/ 
 	public static final String NROF_COPIES = "nrofCopies";
 	/** identifier for the binary-mode setting ({@value})*/ 
