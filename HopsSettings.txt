@@ -1,0 +1,3 @@
+Scenario.name = 10_Hops_Spray
+Group.router = SprayAndWaitRouter
+LimitedHopsRouter.maxHops = 10

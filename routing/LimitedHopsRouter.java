@@ -48,10 +48,5 @@ public abstract class LimitedHopsRouter extends ActiveRouter {
 			 return super.checkReceiving(m);
 		}
 	}
-
-    @Override
-    public MessageRouter replicate() {
-        return new LimitedHopsRouter(this);
-    }
     
 }
