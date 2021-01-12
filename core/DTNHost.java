@@ -7,6 +7,7 @@ package core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import movement.MovementModel;
 import movement.Path;
@@ -33,6 +34,7 @@ public class DTNHost implements Comparable<DTNHost> {
 	private List<MovementListener> movListeners;
 	private List<NetworkInterface> net;
 	private ModuleCommunicationBus comBus;
+	Map<String, ValuesContainer> profile;
 
 	static {
 		DTNSim.registerForReset(DTNHost.class.getCanonicalName());
@@ -52,7 +54,8 @@ public class DTNHost implements Comparable<DTNHost> {
 			List<MovementListener> movLs,
 			String groupId, List<NetworkInterface> interf,
 			ModuleCommunicationBus comBus, 
-			MovementModel mmProto, MessageRouter mRouterProto) {
+			MovementModel mmProto, MessageRouter mRouterProto,
+			Map<String, ValuesContainer> profile) {
 		this.comBus = comBus;
 		this.location = new Coord(0,0);
 		this.address = getNextAddress();
@@ -75,6 +78,7 @@ public class DTNHost implements Comparable<DTNHost> {
 		this.movement = mmProto.replicate();
 		this.movement.setComBus(comBus);
 		setRouter(mRouterProto.replicate());
+		this.profile = profile;
 
 		this.location = movement.getInitialLocation();
 
@@ -155,6 +159,10 @@ public class DTNHost implements Comparable<DTNHost> {
 
 	public void connectionDown(Connection con) {
 		this.router.changedConnection(con);
+	}
+
+	public Map<String, ValuesContainer> getProfile() {
+		return this.profile;
 	}
 
 	/**

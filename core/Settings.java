@@ -12,6 +12,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Scanner;
@@ -431,6 +432,46 @@ public class Settings {
 					"' for '" + setting +"'\n" + e.getMessage());
 		}
 		return number;
+	}
+
+	public Set<Object> getSetSetting(String name) {
+		Set<Object> values = new HashSet<Object>();
+		String set = getSetting(name).trim().trim();
+
+		assert set.startsWith("{") && set.endsWith("}"): "Settings: Invalid set format";
+		set = set.substring(1, set.length() - 1);
+
+		Scanner s = new Scanner(set);
+		s.useDelimiter(",");
+
+		while (s.hasNext()) {
+			String value = s.next().trim();
+			if (value.startsWith("\"")) {
+				assert value.endsWith("\""): "Settings: Invalid string format";
+				values.add(value.substring(1, value.length() - 1));
+			} else if (value.toLowerCase().equals("true"))
+				values.add(true);
+			else if (value.toLowerCase().equals("false"))
+				values.add(false);
+			else
+				values.add(Integer.parseInt(value));
+		}
+		
+		return values;
+	}
+
+	public ValuesContainer getValuesContainer(String name) {
+		String container = getSetting(name);
+		if (container.startsWith("{")) {
+			return new ObjectSetContainer(getSetSetting(name));
+		} else {
+			int[] range = getCsvInts(name);
+			assert range.length == 1 || range.length == 2: "Settings: Invalid range format";
+			if (range.length == 1)
+				return new ObjectSetContainer(range[0]);
+			else
+				return new RangeValuesContainer(range[0], range[1]);
+		}
 	}
 	
 	/**

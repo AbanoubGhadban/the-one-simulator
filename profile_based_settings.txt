@@ -1,0 +1,12 @@
+Scenario.profileAttributes = interests,gender,age
+Scenario.att_gender = {"Male", "Female"}
+Scenario.att_age = 10,25
+Scenario.att_interests = {"Gaming", "Programming", "Swimming", "Handball"}
+
+Events1.class = ProfileBasedMessageEventGenerator
+Events1.profileAttributes = interests,gender,age
+Events1.att_gender = {"Male"}
+Events1.att_age = 20,35
+Events1.att_interests = {"Gaming", "Football", "Swimming"}
+
+Group.router = ProfileBasedEpidemicRouter

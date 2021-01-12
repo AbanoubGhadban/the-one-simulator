@@ -9,7 +9,9 @@ import input.EventQueueHandler;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import movement.MapBasedMovement;
 import movement.MovementModel;
@@ -39,6 +41,8 @@ public class SimScenario implements Serializable {
 	public static final String UP_INT_S = "updateInterval";
 	/** simulate connections -setting id ({@value})*/
 	public static final String SIM_CON_S = "simulateConnections";
+	public static final String PROFILE_ATTRIBUTES_S = "profileAttributes";
+	public static final String ATTRIBUTE_PREFIX_S = "att_";
 
 	/** namespace for interface type settings ({@value}) */
 	public static final String INTTYPE_NS = "Interface";
@@ -120,6 +124,9 @@ public class SimScenario implements Serializable {
 	/** Global application event listeners */
 	private List<ApplicationListener> appListeners;
 
+	
+    Map<String, ValuesContainer> profileSpecs;
+
 	static {
 		DTNSim.registerForReset(SimScenario.class.getCanonicalName());
 		reset();
@@ -154,6 +161,17 @@ public class SimScenario implements Serializable {
 		this.updateListeners = new ArrayList<UpdateListener>();
 		this.appListeners = new ArrayList<ApplicationListener>();
 		this.eqHandler = new EventQueueHandler();
+
+		
+		if (s.contains(PROFILE_ATTRIBUTES_S)) {
+			profileSpecs = new HashMap<>();
+
+			String[] attributes = s.getCsvSetting(PROFILE_ATTRIBUTES_S);
+			for (String attribute : attributes) {
+				ValuesContainer container = s.getValuesContainer(ATTRIBUTE_PREFIX_S + attribute);
+				profileSpecs.put(attribute, container);
+			}
+		}
 
 		/* TODO: check size from movement models */
 		s.setNameSpace(MovementModel.MOVEMENT_MODEL_NS);
@@ -402,10 +420,18 @@ public class SimScenario implements Serializable {
 				// new instances of movement model and message router
 				DTNHost host = new DTNHost(this.messageListeners, 
 						this.movementListeners,	gid, mmNetInterfaces, comBus, 
-						mmProto, mRouterProto);
+						mmProto, mRouterProto, profileSpecs != null? getSubProfile() : null);
 				hosts.add(host);
 			}
 		}
+	}
+
+	Map<String, ValuesContainer> getSubProfile() {
+		Map<String, ValuesContainer> subSpecs = new HashMap<>();
+        for (Map.Entry<String, ValuesContainer> i : profileSpecs.entrySet()) {
+            subSpecs.put(i.getKey(), i.getValue().getSubContainer());
+        }
+        return subSpecs;
 	}
 
 	/**
